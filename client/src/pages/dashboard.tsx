@@ -147,6 +147,13 @@ export default function Dashboard() {
       visitDate: finalDate ? finalDate.toISOString() : undefined,
     });
   };
+  const handleMarkVisited = (userPlaceId: string, placeId: string) => {
+  addUserPlaceMutation.mutate({
+    userId: user!.id,
+    placeId,
+    status: "explored",
+  });
+};
 
 
   const handleOpenReviewDialog = (placeId: string) => {
@@ -535,6 +542,23 @@ export default function Dashboard() {
                       <p className="text-sm leading-relaxed line-clamp-2">
                         {place.description}
                       </p>
+                      <div className="flex flex-col gap-2 mt-3">
+                        {userPlace.visitDate && (
+                          <p className="text-xs text-muted-foreground">
+                            Planned Date: {new Date(userPlace.visitDate).toLocaleDateString()}
+                          </p>
+                        )}
+                        <Button
+                          size="sm"
+                          className="w-full gap-2"
+                          onClick={() => handleMarkVisited(userPlace.id, place.id)}
+                          disabled={addUserPlaceMutation.isPending}
+                          data-testid={`button-mark-visited-${place.id}`}
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          Mark as Visited
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 );
